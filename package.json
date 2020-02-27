@@ -4,10 +4,15 @@
   "description": "Simple investment portfolio visualizer",
   "main": "index.js",
   "scripts": {
+    "start-dev": "node src/app.js",
     "test": "mocha"
   },
   "author": "David Siro",
   "dependencies": {
+    "axios": "^0.19.2",
+    "db-migrate": "^0.11.6",
+    "db-migrate-pg": "^1.0.0",
+    "dotenv": "^8.2.0",
     "mocha": "^7.0.1"
   }
 }

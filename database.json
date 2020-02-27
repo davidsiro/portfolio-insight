@@ -1,0 +1,12 @@
+{
+  "dev": {
+    "driver": "pg",
+    "user": "pi",
+    "password": "pi",
+    "host": "localhost",
+    "database": "portfolio_insight"
+  },
+  "prod": {
+    "filename": "~/prod.db"
+  }
+}
