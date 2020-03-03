@@ -1,12 +1,6 @@
 const pool = require("./postgres");
 
 
-function convertToLong(price) {
-    // alpha vantage has prices with four decimals
-    // hack to overcome js floating point arithmetics
-    return price.replace("\.", "");
-}
-
 module.exports = {
 
     findAllAssets: function () {
@@ -38,13 +32,13 @@ module.exports = {
                         values: [
                             price.day,
                             symbol,
-                            convertToLong(price['1. open']),
-                            convertToLong(price['2. high']),
-                            convertToLong(price['3. low']),
-                            convertToLong(price['4. close']),
-                            convertToLong(price['5. adjusted close']),
-                            convertToLong(price['6. volume']),
-                            convertToLong(price['7. dividend amount']),
+                            convertPriceToLong(price['1. open']),
+                            convertPriceToLong(price['2. high']),
+                            convertPriceToLong(price['3. low']),
+                            convertPriceToLong(price['4. close']),
+                            convertPriceToLong(price['5. adjusted close']),
+                            convertPriceToLong(price['6. volume']),
+                            convertPriceToLong(price['7. dividend amount']),
                             price['8. split coefficient']
                         ]
                     }
@@ -58,6 +52,12 @@ module.exports = {
                 console.log(`Error: ${e}`);
             }
         }
+    },
+
+    convertPriceToLong: function (price) {
+        // alpha vantage/degiro has prices with four decimals
+        // hack to overcome js floating point arithmetics
+        return Number(price.replace("\.", ""));
     }
 
 };
