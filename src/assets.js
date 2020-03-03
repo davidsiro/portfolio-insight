@@ -2,7 +2,9 @@ const pool = require("./postgres");
 
 
 function convertToLong(price) {
-    return price * 1000;
+    // alpha vantage has prices with four decimals
+    // hack to overcome js floating point arithmetics
+    return price.replace("\.", "");
 }
 
 module.exports = {
@@ -28,26 +30,32 @@ module.exports = {
             // __proto__ = Array(0)
 
             console.log(`Saving price for '${symbol}' and ${price.day}`);
-            const result = await client.query({
-                    text: 'insert into asset_price(day, symbol, open, high, low, close, adjusted_close, volume, ' +
-                        'dividend_amount, split_coefficient) values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) ' +
-                        'ON CONFLICT ON CONSTRAINT asset_price_pk DO NOTHING',
-                    values: [
-                        price.day,
-                        symbol,
-                        convertToLong(price['1. open']),
-                        convertToLong(price['2. high']),
-                        convertToLong(price['3. low']),
-                        convertToLong(price['4. close']),
-                        convertToLong(price['5. adjusted close']),
-                        convertToLong(price['6. volume']),
-                        convertToLong(price['7. dividend amount']),
-                        price['8. split coefficient']
-                    ]
+            try {
+                const result = await client.query({
+                        text: 'insert into asset_price(day, symbol, open, high, low, close, adjusted_close, volume, ' +
+                            'dividend_amount, split_coefficient) values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) ' +
+                            'ON CONFLICT ON CONSTRAINT asset_price_pk DO NOTHING',
+                        values: [
+                            price.day,
+                            symbol,
+                            convertToLong(price['1. open']),
+                            convertToLong(price['2. high']),
+                            convertToLong(price['3. low']),
+                            convertToLong(price['4. close']),
+                            convertToLong(price['5. adjusted close']),
+                            convertToLong(price['6. volume']),
+                            convertToLong(price['7. dividend amount']),
+                            price['8. split coefficient']
+                        ]
+                    }
+                );
+                if (result.rowCount === 0) {
+                    console.log(`Skipped insert for '${symbol}' and '${price.day}', price already exists`)
                 }
-            );
-            if (result.rowCount === 0) {
-                console.log(`Skipped insert for '${symbol}' and '${price.day}', price already exists`)
+
+            } catch (e) {
+                console.log(`Failed to save price entry: ${JSON.stringify(price)}`);
+                console.log(`Error: ${e}`);
             }
         }
     }
