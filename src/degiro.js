@@ -1,6 +1,6 @@
-const {convertPriceToLong} = require("./assets");
+const {convertPriceToLong} = require("./conversions");
 const moment = require('moment');
-const fs = require('fs')
+const fs = require('fs');
 const parse = require('csv-parse');
 
 module.exports = {

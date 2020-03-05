@@ -1,5 +1,5 @@
+const {convertPriceToLong} = require("./conversions");
 const pool = require("./postgres");
-
 
 module.exports = {
 
@@ -54,10 +54,32 @@ module.exports = {
         }
     },
 
-    convertPriceToLong: function (price) {
-        // alpha vantage/degiro has prices with four decimals
-        // hack to overcome js floating point arithmetics
-        return Number(price.replace("\.", ""));
+    saveTransactions: async function (transactions) {
+        const client = await pool.connect();
+
+        let total = 0;
+        for (const transaction of transactions) {
+            const transactionId = transaction.transactionId;
+            const result = await client.query({
+                text: 'insert into asset_allocation (transaction_id, event_timestamp, isin, quantity, price,' +
+                    ' buy_sell) values ($1, $2, $3, $4, $5, $6) ON CONFLICT ON CONSTRAINT asset_allocation_pk DO' +
+                    ' NOTHING',
+                values: [
+                    transactionId,
+                    transaction.eventTimestamp,
+                    transaction.isin,
+                    transaction.quantity,
+                    transaction.price,
+                    'B'
+                ]
+            });
+            if (result.rowCount === 0) {
+                console.log(`Skipped insert for '${transactionId}' entry already exists`)
+            } else {
+                total++;
+            }
+        }
+        console.log(`Inserted ${total} records`)
     }
 
 };
