@@ -1,32 +1,32 @@
 require('dotenv').config();
+const {logger} = require('./logger');
 const DBMigrate = require('db-migrate');
 const dbmigrate = DBMigrate.getInstance(true);
 const importAssetPrices = require("./price-importer");
 
 
 async function migrateDB() {
-    console.log("Migrating database...");
+    logger.info("Migrating database...");
 
     await dbmigrate.up();
 
-    console.log("Migration finished...");
+    logger.info("Migration finished...");
 }
 
 async function run() {
-    console.log("Starting up...");
+    logger.info("Starting up...");
 
     await migrateDB();
 
-    await importAssetPrices()
+    let downloadIntervalMillis;
+    if (process.env.PRICE_DOWNLOAD_INTERVAL_HOURS) {
+        // convert hours to downloadIntervalMillis
+        downloadIntervalMillis = process.env.PRICE_DOWNLOAD_INTERVAL_HOURS * 60 * 60 * 1000
+    } else {
+        downloadIntervalMillis = 10 * 1000;
+    }
 
-    // const AlphaVantageAPI = require('./alpha-vantage')
-    // const alphaVantageUrl = process.env.ALPHA_VANTAGE_URL ||'https://www.alphavantage.co';
-    // const apiKey = process.env.ALPHA_VANTAGE_API_KEY;
-    //
-    // const api = new AlphaVantageAPI({apiKey: apiKey, url: alphaVantageUrl});
-
-    // const prices = await api.fetchDailyPrices("WRD.PAR");
-    // console.log("Prices: " + JSON.stringify(prices));
+    setInterval(async () => await importAssetPrices(), downloadIntervalMillis);
 }
 
 run();

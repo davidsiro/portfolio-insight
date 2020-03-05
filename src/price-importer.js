@@ -1,3 +1,4 @@
+const {logger} = require('./logger');
 const {findAllAssets, savePrices} = require('../src/assets');
 const AlphaVantageAPI = require('./alpha-vantage');
 const alphaVantageUrl = process.env.ALPHA_VANTAGE_URL || 'https://www.alphavantage.co';
@@ -11,7 +12,7 @@ async function importAssetPrices() {
     return Promise.all(
         assets.map(asset => {
             const symbol = asset.symbol.trim();
-            console.log("Fetching prices for: " + symbol);
+            logger.info("Fetching prices for: " + symbol);
             return api
                 .fetchDailyPrices(symbol)
                 .then(prices => savePrices(symbol, prices));

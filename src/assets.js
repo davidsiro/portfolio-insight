@@ -1,3 +1,4 @@
+const {logger} = require('./logger');
 const {convertPriceToLong} = require("./conversions");
 const pool = require("./postgres");
 
@@ -23,7 +24,7 @@ module.exports = {
             // length = 8
             // __proto__ = Array(0)
 
-            console.log(`Saving price for '${symbol}' and ${price.day}`);
+            logger.info(`Saving price for '${symbol}' and ${price.day}`);
             try {
                 const result = await client.query({
                         text: 'insert into asset_price(day, symbol, open, high, low, close, adjusted_close, volume, ' +
@@ -44,12 +45,12 @@ module.exports = {
                     }
                 );
                 if (result.rowCount === 0) {
-                    console.log(`Skipped insert for '${symbol}' and '${price.day}', price already exists`)
+                    logger.info(`Skipped insert for '${symbol}' and '${price.day}', price already exists`)
                 }
 
             } catch (e) {
-                console.log(`Failed to save price entry: ${JSON.stringify(price)}`);
-                console.log(`Error: ${e}`);
+                logger.info(`Failed to save price entry: ${JSON.stringify(price)}`);
+                logger.info(`Error: ${e}`);
             }
         }
     },
@@ -74,12 +75,12 @@ module.exports = {
                 ]
             });
             if (result.rowCount === 0) {
-                console.log(`Skipped insert for '${transactionId}' entry already exists`)
+                logger.info(`Skipped insert for '${transactionId}' entry already exists`)
             } else {
                 total++;
             }
         }
-        console.log(`Inserted ${total} records`)
+        logger.info(`Inserted ${total} records`)
     }
 
 };
