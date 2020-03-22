@@ -1,0 +1,20 @@
+version: '3'
+services:
+  pi-db:
+    image: postgres:12
+    env_file:
+      - .docker.env
+    environment:
+      - POSTGRES_DB=${PGDATABASE}
+      - POSTGRES_USER=${PGUSER}
+      - POSTGRES_PASSWORD=${PGPASSWORD}
+  pi-data-collector:
+    depends_on:
+      - pi-db
+    build:
+      context: ./
+    env_file:
+      - .docker.env
+    environment:
+      - PGHOST=pi-db
+      - PGPORT=5432

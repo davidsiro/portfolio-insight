@@ -23,7 +23,8 @@ async function run() {
         // convert hours to downloadIntervalMillis
         downloadIntervalMillis = process.env.PRICE_DOWNLOAD_INTERVAL_HOURS * 60 * 60 * 1000
     } else {
-        downloadIntervalMillis = 10 * 1000;
+        // 2 minutes by default, in prod it should be like every 12 hrs
+        downloadIntervalMillis = 120 * 1000;
     }
 
     setInterval(async () => await importAssetPrices(), downloadIntervalMillis);
