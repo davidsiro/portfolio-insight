@@ -8,6 +8,8 @@ services:
       - POSTGRES_DB=${PGDATABASE}
       - POSTGRES_USER=${PGUSER}
       - POSTGRES_PASSWORD=${PGPASSWORD}
+    volumes:
+    - ~/.portfolio-insight/data:/var/lib/postgresql/data
   pi-data-collector:
     depends_on:
       - pi-db
