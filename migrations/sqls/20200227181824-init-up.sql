@@ -36,7 +36,3 @@ CREATE TABLE asset_allocation
 
 ALTER TABLE asset_allocation
     ADD CONSTRAINT asset_allocation_pk PRIMARY KEY (transaction_id);
-
-
-INSERT INTO asset (symbol, name, isin)
-VALUES ('WRD.PAR', 'HSBC MSCI World UCITS ETF', 'IE00B4X9L533')
