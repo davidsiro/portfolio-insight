@@ -6,6 +6,7 @@ RUN npm install
 COPY database.json ./
 COPY migrations/ ./migrations
 
+COPY csv_import.sh .
 COPY src/ ./src
 
 CMD ["node", "src/app.js"]
