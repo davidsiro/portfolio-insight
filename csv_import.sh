@@ -1,3 +1,3 @@
 #!/bin/bash
 
-node src/asset-allocation-csv-importer.js $1
+node src/stream-asset-allocation-csv-importer.js < $1
