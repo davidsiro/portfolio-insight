@@ -15,7 +15,8 @@ async function importAssetPrices() {
             logger.info("Fetching prices for: " + symbol);
             return api
                 .fetchDailyPrices(symbol)
-                .then(prices => savePrices(symbol, prices));
+                .then(prices => savePrices(symbol, prices))
+                .catch(error => logger.error(`Failed to fetch/save prices for ${symbol}, skipping.`, error));
         })
     );
 }

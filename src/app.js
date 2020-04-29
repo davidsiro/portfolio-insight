@@ -24,9 +24,12 @@ async function run() {
         downloadIntervalMillis = process.env.PRICE_DOWNLOAD_INTERVAL_HOURS * 60 * 60 * 1000
     } else {
         // 2 minutes by default, in prod it should be like every 12 hrs
-        downloadIntervalMillis = 120 * 1000;
+        logger.info("DEV only - running data collection on shorter intervals")
+        downloadIntervalMillis = 10 * 1000;
     }
 
+    logger.info("pi-data-collector starting...")
+    logger.info("TODO Print important startup options")
     setInterval(async () => await importAssetPrices(), downloadIntervalMillis);
 }
 

@@ -11,7 +11,13 @@ class AlphaVantageAPI {
 
     fetchDailyPrices(symbol) {
         const tsUrl = `${this.url}/query?function=TIME_SERIES_DAILY_ADJUSTED&symbol=${symbol}&apikey=${this.apiKey}`;
-        return axios.get(tsUrl).then(r => this.mapResponseToPrices(r.data));
+        return axios.get(tsUrl).then(r => {
+            try {
+                this.mapResponseToPrices(r.data)
+            } catch (e) {
+                throw Error(`Failed to map AlphaVantage response: '${JSON.stringify(r.data)}', original error: ${e}`)
+            }
+        });
     }
 
     mapResponseToPrices(resp) {
@@ -19,7 +25,7 @@ class AlphaVantageAPI {
         const timeSeries = resp['Time Series (Daily)'];
 
         // filter out all TS except current day, which is still in Trading
-        const lastRefreshed = moment( metadata['3. Last Refreshed']);
+        const lastRefreshed = moment(metadata['3. Last Refreshed']);
         const prices = [];
         for (let day in timeSeries) {
             const dayParsed = moment(day);
