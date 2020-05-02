@@ -13,9 +13,9 @@ class AlphaVantageAPI {
         const tsUrl = `${this.url}/query?function=TIME_SERIES_DAILY_ADJUSTED&symbol=${symbol}&apikey=${this.apiKey}`;
         return axios.get(tsUrl).then(r => {
             try {
-                this.mapResponseToPrices(r.data)
+                return this.mapResponseToPrices(r.data)
             } catch (e) {
-                throw Error(`Failed to map AlphaVantage response: '${JSON.stringify(r.data)}', original error: ${e}`)
+                throw Error(`Failed to map AlphaVantage response: '${JSON.stringify(r.data)}', original error: '${e}', requested url: ${tsUrl}`)
             }
         });
     }

@@ -16,7 +16,7 @@ async function importAssetPrices() {
             return api
                 .fetchDailyPrices(symbol)
                 .then(prices => savePrices(symbol, prices))
-                .catch(error => logger.error(`Failed to fetch/save prices for ${symbol}, skipping.`, error));
+                .catch(error => logger.error(`Failed to fetch/save prices for ${symbol}, skipping. Error: ${error}`));
         })
     );
 }
