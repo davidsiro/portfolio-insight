@@ -9,7 +9,7 @@
   },
   "author": "David Siro",
   "dependencies": {
-    "axios": "^0.19.2",
+    "axios": "^0.21.1",
     "csv-parse": "^4.8.8",
     "db-migrate": "^0.11.6",
     "db-migrate-pg": "^1.0.0",
